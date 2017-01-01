@@ -17,14 +17,16 @@ RUN \
   git config --global pack.packSizeLimit 2047m && \
   git config --global pack.windowMemory 2047m
 
-# Docker binaries
+# Docker 1.9.1 binary
 RUN \
-  wget https://get.docker.com/builds/Linux/x86_64/docker-1.10.3 && \
-  wget https://get.docker.com/builds/Linux/x86_64/docker-1.7.0 && \
   wget https://get.docker.com/builds/Linux/x86_64/docker-1.9.1 && \
-  mv docker-1.10.3 /usr/bin/docker-1.10.3 && \
-  mv docker-1.7.0 /usr/bin/docker-1.7.0 && \
   mv docker-1.9.1 /usr/bin/docker-1.9.1 && \
-  chmod +x /usr/bin/docker-1.10.3 && \
-  chmod +x /usr/bin/docker-1.9.1 && \
-  chmod +x /usr/bin/docker-1.7.0
+  chmod +x /usr/bin/docker-1.9.1
+
+# Docker 1.12.x binary
+RUN \
+    wget https://get.docker.com/builds/Linux/x86_64/docker-1.12.5.tgz && \
+    tar -xvf docker-1.12.5.tgz --strip-components 1 docker/docker && \
+    mv docker /usr/bin/docker-1.12.5 && \
+    chmod +x /usr/bin/docker-1.12.5 && \
+    rm -rf docker-1.12.5.tgz
