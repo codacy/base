@@ -25,8 +25,9 @@ RUN \
 
 # Docker 1.12.x binary
 RUN \
-    wget https://get.docker.com/builds/Linux/x86_64/docker-1.12.5.tgz && \
-    tar -xvf docker-1.12.5.tgz --strip-components 1 docker/docker && \
-    mv docker /usr/bin/docker-1.12.5 && \
-    chmod +x /usr/bin/docker-1.12.5 && \
-    rm -rf docker-1.12.5.tgz
+    DOCKER_VERSION="docker-1.12.6" && \
+    wget https://get.docker.com/builds/Linux/x86_64/$DOCKER_VERSION.tgz && \
+    tar -xvf $DOCKER_VERSION.tgz --strip-components 1 docker/docker && \
+    rm -rf $DOCKER_VERSION.tgz && \
+    mv docker /usr/bin/$DOCKER_VERSION && \
+    chmod +x /usr/bin/$DOCKER_VERSION
