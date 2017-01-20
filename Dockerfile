@@ -17,6 +17,12 @@ RUN \
   git config --global pack.packSizeLimit 2047m && \
   git config --global pack.windowMemory 2047m
 
+# Docker 1.7.1 binary
+RUN \
+  wget https://get.docker.com/builds/Linux/x86_64/docker-1.7.1 && \
+  mv docker-1.7.1 /usr/bin/docker-1.7.1 && \
+  chmod +x /usr/bin/docker-1.7.1
+
 # Docker 1.9.1 binary
 RUN \
   wget https://get.docker.com/builds/Linux/x86_64/docker-1.9.1 && \
