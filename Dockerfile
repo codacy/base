@@ -37,3 +37,12 @@ RUN \
     rm -rf $DOCKER_VERSION.tgz && \
     mv docker /usr/bin/$DOCKER_VERSION && \
     chmod +x /usr/bin/$DOCKER_VERSION
+
+# Docker 17.03.x binary
+RUN \
+    DOCKER_VERSION="docker-17.03.2-ce" && \
+    wget https://download.docker.com/linux/static/stable/x86_64/$DOCKER_VERSION.tgz && \
+    tar -xvf $DOCKER_VERSION.tgz --strip-components 1 docker/docker && \
+    rm -rf $DOCKER_VERSION.tgz && \
+    mv docker /usr/bin/$DOCKER_VERSION && \
+    chmod +x /usr/bin/$DOCKER_VERSION
