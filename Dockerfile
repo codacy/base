@@ -6,9 +6,10 @@ ENV LANGUAGE C.UTF-8
 ENV LC_ALL C.UTF-8
 
 RUN \
+  echo "http://dl-cdn.alpinelinux.org/alpine/v3.5/main" >> /etc/apk/repositories && \
+  echo "http://dl-cdn.alpinelinux.org/alpine/v3.5/community" >> /etc/apk/repositories && \
   apk update && \
-  apk upgrade && \
-  apk add bash git openssh && \
+  apk add bash git=2.11.3-r0 openssh && \
   echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config && \
   git config --global core.quotepath false && \
   git config --global core.packedGitLimit 512m && \
