@@ -17,30 +17,15 @@ RUN \
   git config --global pack.packSizeLimit 2047m && \
   git config --global pack.windowMemory 2047m
 
-# Docker 1.7.1 binary
-RUN \
-  wget https://get.docker.com/builds/Linux/x86_64/docker-1.7.1 && \
-  mv docker-1.7.1 /usr/bin/docker-1.7.1 && \
-  chmod +x /usr/bin/docker-1.7.1
-
 # Docker 1.9.1 binary
 RUN \
   wget https://get.docker.com/builds/Linux/x86_64/docker-1.9.1 && \
   mv docker-1.9.1 /usr/bin/docker-1.9.1 && \
   chmod +x /usr/bin/docker-1.9.1
 
-# Docker 1.12.x binary
+# Docker 17.09.0 binary
 RUN \
-    DOCKER_VERSION="docker-1.12.6" && \
-    wget https://get.docker.com/builds/Linux/x86_64/$DOCKER_VERSION.tgz && \
-    tar -xvf $DOCKER_VERSION.tgz --strip-components 1 docker/docker && \
-    rm -rf $DOCKER_VERSION.tgz && \
-    mv docker /usr/bin/$DOCKER_VERSION && \
-    chmod +x /usr/bin/$DOCKER_VERSION
-
-# Docker 17.03.x binary
-RUN \
-    DOCKER_VERSION="docker-17.03.2-ce" && \
+    DOCKER_VERSION="docker-17.09.0-ce" && \
     wget https://download.docker.com/linux/static/stable/x86_64/$DOCKER_VERSION.tgz && \
     tar -xvf $DOCKER_VERSION.tgz --strip-components 1 docker/docker && \
     rm -rf $DOCKER_VERSION.tgz && \
