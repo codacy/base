@@ -31,3 +31,7 @@ RUN \
     rm -rf $DOCKER_VERSION.tgz && \
     mv docker /usr/bin/$DOCKER_VERSION && \
     chmod +x /usr/bin/$DOCKER_VERSION
+
+ENV TINI_VERSION v0.16.1
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+RUN chmod +x /tini
