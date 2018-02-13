@@ -18,3 +18,7 @@ RUN \
   git config --global pack.packSizeLimit 2047m && \
   git config --global pack.windowMemory 2047m && \
   rm -rf /var/cache/apk/*
+
+ENV TINI_VERSION v0.16.1
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+RUN chmod +x /tini
