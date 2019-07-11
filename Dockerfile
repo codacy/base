@@ -1,4 +1,4 @@
-FROM codacy/docker-java:0.0.1
+FROM codacy/docker-java:1.0.0
 
 LABEL maintainer="Rodrigo Fernandes <rodrigo@codacy.com>"
 
