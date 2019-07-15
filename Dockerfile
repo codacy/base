@@ -6,7 +6,7 @@ RUN \
   apt-get -y update && \
   add-apt-repository -y ppa:git-core/ppa && \
   apt-get -y update && \
-  apt-get -y install curl wget unzip vim && \
+  apt-get -y install curl wget unzip && \
   apt-get -y install git=1:2.* && \
         rm -rf /root/.cache && \
         apt-get purge -y $(apt-cache search '~c' | awk '{ print $2 }') && \

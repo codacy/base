@@ -11,9 +11,12 @@ Dockerfile describing a docker containing:
 - OpenJDK 8 JRE
 - Docker cli 17.09.*
 - Git cli 2.*
-- Unix tools: curl, wget, unzip and vim.
+- Unix tools: curl, wget and unzip.
 
 ## Build and Publish
+
+Check the complete list of available commands
+to build and publish this docker image by running:
 
 ```sh
 make help
