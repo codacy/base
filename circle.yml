@@ -1,26 +1,40 @@
-machine:
-  java:
-    version: oraclejdk8
-  services:
-    - docker
+version: 2.1
 
-test:
-  override:
-    - docker build -t codacy/$CIRCLE_PROJECT_REPONAME:$DOCKER_VERSION_PREFIX.$CIRCLE_BUILD_NUM --no-cache .
+orbs:
+  codacy: codacy/base@0.0.13
 
-deployment:
-  master:
-    branch: master
-    commands:
-      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-      - docker tag -f codacy/$CIRCLE_PROJECT_REPONAME:$DOCKER_VERSION_PREFIX.$CIRCLE_BUILD_NUM codacy/$CIRCLE_PROJECT_REPONAME:latest
-      - docker push codacy/$CIRCLE_PROJECT_REPONAME:$DOCKER_VERSION_PREFIX.$CIRCLE_BUILD_NUM
-      - docker push codacy/$CIRCLE_PROJECT_REPONAME:latest
-  alpine:
-    branch: alpine
-    commands:
-      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-      - docker tag -f codacy/$CIRCLE_PROJECT_REPONAME:$DOCKER_VERSION_PREFIX.$CIRCLE_BUILD_NUM codacy/$CIRCLE_PROJECT_REPONAME:$DOCKER_VERSION_PREFIX.$CIRCLE_BUILD_NUM-alpine
-      - docker tag -f codacy/$CIRCLE_PROJECT_REPONAME:$DOCKER_VERSION_PREFIX.$CIRCLE_BUILD_NUM-alpine codacy/$CIRCLE_PROJECT_REPONAME:alpine
-      - docker push codacy/$CIRCLE_PROJECT_REPONAME:$DOCKER_VERSION_PREFIX.$CIRCLE_BUILD_NUM-alpine
-      - docker push codacy/$CIRCLE_PROJECT_REPONAME:alpine
+workflows:
+  version: 2
+  test-and-publish:
+    jobs:
+      - codacy/checkout_and_version:
+          write_sbt_version: false
+      - codacy/shell:
+          name: build_docker
+          requires:
+            - codacy/checkout_and_version
+          cmd: make docker_build
+          filters:
+            branches:
+              ignore:
+                - master
+      - codacy/shell:
+          name: build_and_publish_docker
+          context: CodacyDocker
+          requires:
+            - codacy/checkout_and_version
+          cmd: |
+            make docker_build && \
+              make push-docker-image && \
+              make push-latest-docker-image
+          filters:
+            branches:
+              only:
+                - master
+      - codacy/tag_version:
+          requires:
+            - build_and_publish_docker
+          filters:
+            branches:
+              only:
+                - master
