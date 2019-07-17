@@ -1,13 +1,18 @@
-FROM codacy/docker-java:1.0.0
+FROM library/openjdk:8-jre-slim-buster
 
 LABEL maintainer="Rodrigo Fernandes <rodrigo@codacy.com>"
 
 RUN \
   apt-get -y update && \
+  apt-get -y install software-properties-common gnupg && \
+  export GNUPGHOME="$(mktemp -d)" && \
+  apt-key adv --keyserver keyserver.ubuntu.com --recv-keys A1715D88E1DF1F24 && \
   add-apt-repository -y ppa:git-core/ppa && \
   apt-get -y update && \
   apt-get -y install curl wget unzip && \
   apt-get -y install git=1:2.* && \
+        rm -rf "$GNUPGHOME" && \
+        apt-get -y remove software-properties-common gnupg && \
         rm -rf /root/.cache && \
         apt-get purge -y $(apt-cache search '~c' | awk '{ print $2 }') && \
         apt-get -y autoremove && \
