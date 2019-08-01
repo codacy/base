@@ -7,7 +7,7 @@
 ## Contents
 
 Dockerfile describing a docker containing:
-- Ubuntu 18.04.*
+- Debian Buster
 - OpenJDK 8 JRE
 - Docker cli 17.09.*
 - Git cli 2.*
