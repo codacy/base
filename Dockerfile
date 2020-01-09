@@ -1,4 +1,4 @@
-FROM library/openjdk:8-jdk-slim-buster
+FROM library/openjdk:8u232-jdk-slim-buster
 
 LABEL maintainer="Rodrigo Fernandes <rodrigo@codacy.com>"
 
