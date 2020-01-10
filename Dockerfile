@@ -44,6 +44,20 @@ RUN \
     mv docker /usr/bin/$DOCKER_VERSION && \
     chmod +x /usr/bin/$DOCKER_VERSION
 
+# Add new AWS RDS CA certificates
+# For details see:
+#  - https://aws.amazon.com/blogs/database/amazon-rds-customers-update-your-ssl-tls-certificates-by-february-5-2020/
+RUN \
+    mkdir /tmp/aws-certs && \
+    cd /tmp/aws-certs && \
+    wget https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem && \
+    csplit -sz rds-combined-ca-bundle.pem '/-BEGIN CERTIFICATE-/' '{*}' && \
+    for cert in xx* ; do cp $cert /usr/local/share/ca-certificates/aws-rds-ca-$cert.crt ; done && \
+    update-ca-certificates && \
+    cd / && \
+    rm -rvf /tmp/aws-certs && \
+    keytool -list -keystore /usr/local/openjdk-8/jre/lib/security/cacerts -storepass changeit -noprompt | grep rds
+
 ENV TINI_VERSION v0.18.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
 RUN chmod +x /tini
