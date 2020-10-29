@@ -7,7 +7,7 @@ RUN \
   apt-get -y install software-properties-common gnupg && \
   export GNUPGHOME="$(mktemp -d)" && \
   apt-key adv --keyserver keyserver.ubuntu.com --recv-keys A1715D88E1DF1F24 && \
-  add-apt-repository -y ppa:git-core/ppa && \
+  add-apt-repository -y -r ppa:git-core/ppa && \
   apt-get -y update && \
   apt-get -y install curl wget unzip && \
   apt-get -y install git=1:2.* && \
