@@ -1,4 +1,4 @@
-FROM library/openjdk:8u232-jdk-slim-buster
+FROM adoptopenjdk/openjdk8:jdk8u292-b10-ubuntu-slim@sha256:670733601bac93b8b4809483e7d9c710b98adab2fdbeac070779e8cbf2bb70a3
 
 LABEL maintainer="Rodrigo Fernandes <rodrigo@codacy.com>"
 
@@ -9,7 +9,7 @@ RUN \
   apt-key adv --keyserver keyserver.ubuntu.com --recv-keys A1715D88E1DF1F24 && \
   add-apt-repository -y "deb http://ppa.launchpad.net/git-core/ppa/ubuntu focal main" && \
   apt-get -y update && \
-  apt-get -y install curl wget unzip && \
+  apt-get -y install wget unzip && \
   apt-get -y install git=1:2.* && \
         rm -rf "$GNUPGHOME" && \
         apt-get -y remove software-properties-common gnupg && \
