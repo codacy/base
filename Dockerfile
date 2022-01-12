@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk8:jdk8u302-b08-ubuntu-slim@sha256:e1f78e2ea4ba1adc8c03eda94a45a4d667bdb19f991700a56600d8a85694c425
+FROM eclipse-temurin:8u312-b07-jdk-focal
 
 LABEL maintainer="Codacy Team <code@codacy.com>"
 
