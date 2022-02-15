@@ -1,4 +1,4 @@
-FROM eclipse-temurin:8u312-b07-jdk-focal
+FROM eclipse-temurin:8u322-b06-jre-focal
 
 LABEL maintainer="Codacy Team <code@codacy.com>"
 
