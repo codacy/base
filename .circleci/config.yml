@@ -33,6 +33,7 @@ workflows:
               only:
                 - master
       - codacy/tag_version:
+          context: CodacyAWS
           requires:
             - build_and_publish_docker
           filters:
