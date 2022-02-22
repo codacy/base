@@ -11,6 +11,7 @@ RUN \
   apt-get -y update && \
   apt-get -y install wget unzip && \
   apt-get -y install git=1:2.* && \
+  apt-get -y upgrade && \
   rm -rf "$GNUPGHOME" && \
   apt-get -y remove software-properties-common gnupg && \
   rm -rf /root/.cache && \
