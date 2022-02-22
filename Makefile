@@ -7,6 +7,10 @@ all: docker_build ## produce the docker image
 docker_build: ## build the docker image
 	docker build --no-cache -t $(DOCKER_IMAGE_NAME):$(VERSION) .
 
+docker_scan: ## scan the docker image for security vulnerabilities
+	docker scan --accept-license --login --token $(DOCKER_SCAN_SNYK_TOKEN) &&\
+	docker scan --accept-license --severity high $(DOCKER_IMAGE_NAME):$(VERSION)
+
 .PHONY: push-docker-image
 push-docker-image: ## push the docker image to the registry (DOCKER_USER and DOCKER_PASS mandatory)
 	@docker login -u $(DOCKER_USER) -p $(DOCKER_PASS) &&\

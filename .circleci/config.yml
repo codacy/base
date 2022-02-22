@@ -1,19 +1,19 @@
 version: 2.1
 
 orbs:
-  codacy: codacy/base@0.0.13
+  codacy: codacy/base@6.1.4
 
 workflows:
   version: 2
   test-and-publish:
     jobs:
-      - codacy/checkout_and_version:
-          write_sbt_version: false
+      - codacy/checkout_and_version
       - codacy/shell:
-          name: build_docker
+          name: build_and_scan_docker
+          context: CodacyDocker
           requires:
             - codacy/checkout_and_version
-          cmd: make docker_build
+          cmd: make docker_build && make docker_scan
           filters:
             branches:
               ignore:
@@ -25,6 +25,7 @@ workflows:
             - codacy/checkout_and_version
           cmd: |
             make docker_build && \
+              make docker_scan && \
               make push-docker-image && \
               make push-latest-docker-image
           filters:
