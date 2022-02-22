@@ -10,6 +10,7 @@ workflows:
       - codacy/checkout_and_version
       - codacy/shell:
           name: build_and_scan_docker
+          context: CodacyDocker
           requires:
             - codacy/checkout_and_version
           cmd: make docker_build && make docker_scan
