@@ -1,20 +1,26 @@
 DOCKER_IMAGE_NAME=codacy/base
 
 VERSION?=$(shell cat .version || echo dev)
+OPENJ9_VERSION?=openj9-$(VERSION)
+BASE_IMAGE_OPENJDK=eclipse-temurin:8u322-b06-jre-focal
+BASE_IMAGE_OPENJ9=adoptopenjdk/openjdk8-openj9:x86_64-ubuntu-jdk8u322-b06_openj9-0.30.0-slim
 
 all: docker_build ## produce the docker image
 
 docker_build: ## build the docker image
-	docker build --no-cache -t $(DOCKER_IMAGE_NAME):$(VERSION) .
+	docker build --build-arg base_image=$(BASE_IMAGE_OPENJDK) --no-cache -t $(DOCKER_IMAGE_NAME):$(VERSION) .
+	docker build --build-arg base_image=$(BASE_IMAGE_OPENJ9) --no-cache -t $(DOCKER_IMAGE_NAME):$(OPENJ9_VERSION) .
 
 docker_scan: ## scan the docker image for security vulnerabilities
 	docker scan --accept-license --login --token $(DOCKER_SCAN_SNYK_TOKEN) &&\
 	docker scan --accept-license --severity high $(DOCKER_IMAGE_NAME):$(VERSION)
+	docker scan --accept-license --severity high $(DOCKER_IMAGE_NAME):$(OPENJ9_VERSION)
 
 .PHONY: push-docker-image
 push-docker-image: ## push the docker image to the registry (DOCKER_USER and DOCKER_PASS mandatory)
 	@docker login -u $(DOCKER_USER) -p $(DOCKER_PASS) &&\
 	docker push $(DOCKER_IMAGE_NAME):$(VERSION)
+	docker push $(DOCKER_IMAGE_NAME):$(OPENJ9_VERSION)
 
 .PHONY: push-latest-docker-image
 push-latest-docker-image: ## push the docker image with the "latest" tag to the registry (DOCKER_USER and DOCKER_PASS mandatory)
