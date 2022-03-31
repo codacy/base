@@ -1,4 +1,5 @@
-FROM eclipse-temurin:8u322-b06-jre-focal
+ARG base_image
+FROM ${base_image}
 
 LABEL maintainer="Codacy Team <code@codacy.com>"
 
