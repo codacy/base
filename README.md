@@ -1,4 +1,4 @@
-# Codacy Docker Base
+# Codacy Docker Base Images
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/0cd6b6dd0d60416bbca459149dd9f18a)](https://www.codacy.com/gh/codacy/base?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=codacy/base&amp;utm_campaign=Badge_Grade)
 [![CircleCI](https://circleci.com/gh/codacy/base.svg?style=svg)](https://circleci.com/gh/codacy/base)
