@@ -44,7 +44,8 @@ RUN \
   tar -xvf $DOCKER_VERSION.tgz --strip-components 1 docker/docker && \
   rm -rf $DOCKER_VERSION.tgz && \
   mv docker /usr/bin/$DOCKER_VERSION && \
-  chmod +x /usr/bin/$DOCKER_VERSION
+  chmod +x /usr/bin/$DOCKER_VERSION && \
+  apt-get update && apt-get upgrade -y
 
 ENV TINI_VERSION v0.18.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
