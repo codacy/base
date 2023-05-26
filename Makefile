@@ -4,9 +4,9 @@ WITHTOOLS_IMAGE_NAME=codacy/withtools
 VERSION?=$(shell cat .version || echo dev)
 OPENJ9_VERSION?=openj9-$(VERSION)
 OPENJDK17_VERSION?=jre17-$(VERSION)
-BASE_IMAGE_OPENJDK=eclipse-temurin:8u362-b09-jre-focal
-BASE_IMAGE_OPENJDK17=eclipse-temurin:17.0.6_10-jre-focal
-BASE_IMAGE_OPENJ9=adoptopenjdk/openjdk8-openj9:x86_64-ubuntu-jre8u332-b09_openj9-0.32.0
+BASE_IMAGE_OPENJDK=adoptopenjdk/openjdk8:jre8u372-b07-ubuntu
+BASE_IMAGE_OPENJDK17=eclipse-temurin:17.0.7_7-jdk-focal
+BASE_IMAGE_OPENJ9=adoptopenjdk/openjdk8-openj9:jre8u362-b09_openj9-0.36.0-ubuntu
 
 all: docker_build ## produce the docker image
 
