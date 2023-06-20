@@ -6,7 +6,7 @@ OPENJ9_VERSION?=openj9-$(VERSION)
 OPENJDK17_VERSION?=jre17-$(VERSION)
 BASE_IMAGE_OPENJDK=adoptopenjdk/openjdk8:jre8u372-b07-ubuntu
 BASE_IMAGE_OPENJDK17=eclipse-temurin:17.0.7_7-jdk-focal
-BASE_IMAGE_OPENJ9=adoptopenjdk/openjdk8-openj9:jre8u362-b09_openj9-0.36.0-ubuntu
+BASE_IMAGE_OPENJ9=adoptopenjdk/openjdk8-openj9:jre8u372-b07_openj9-0.38.0-ubuntu
 
 all: docker_build ## produce the docker image
 
