@@ -12,6 +12,7 @@ RUN \
   apt-get -y update && \
   apt-get -y install wget unzip && \
   apt-get -y install git=1:2.* && \
+  apt-get -y install make && \
   apt-get -y upgrade && \
   rm -rf "$GNUPGHOME" && \
   apt-get -y remove software-properties-common gnupg && \
@@ -53,9 +54,20 @@ RUN chmod +x /tini
 
 FROM base as withtools
 
+# Installing the latest stable apparmor version. The latest version available in Ubuntu 22 has vulnerabilities:
+# - https://scout.docker.com/vulnerabilities/id/CVE-2016-1585
+RUN \
+  APPARMOR_VERSION="3.1.6" && \
+  wget https://gitlab.com/apparmor/apparmor/-/archive/v$APPARMOR_VERSION/apparmor-v$APPARMOR_VERSION.tar && \
+  tar -xvf apparmor-v$APPARMOR_VERSION.tar && \
+  make -C apparmor-v$APPARMOR_VERSION && \
+  make -C apparmor-v$APPARMOR_VERSION install && \
+  rm -r apparmor-v$APPARMOR_VERSION/* && \
+  rm -r apparmor-v$APPARMOR_VERSION.tar
+
 RUN \
   apt-get -y update && \
-  apt-get -y install apparmor libdevmapper1.02.1 && \
+  apt-get -y install libdevmapper1.02.1 && \
   apt-get -y install libltdl-dev && \
   ln -s /lib/x86_64-linux-gnu/libdevmapper.so.1.02.1 /lib/x86_64-linux-gnu/libdevmapper.so.1.02 && \
   apt-get purge -y $(apt-cache search '~c' | awk '{ print $2 }') && \
