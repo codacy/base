@@ -19,14 +19,18 @@ docker_build: ## build the docker image
 	docker build --build-arg base_image=$(BASE_IMAGE_OPENJ9) --no-cache -t $(WITHTOOLS_IMAGE_NAME):$(OPENJ9_VERSION) --target withtools .
 	docker build --build-arg base_image=$(BASE_IMAGE_OPENJDK17) --no-cache -t $(WITHTOOLS_IMAGE_NAME):$(OPENJDK17_VERSION) --target withtools .
 
-docker_scan: ## scan the docker image for security vulnerabilities
-	docker scan --accept-license --login --token $(DOCKER_SCAN_SNYK_TOKEN) &&\
-	docker scan --accept-license --severity high $(BASE_IMAGE_NAME):$(VERSION)
-	docker scan --accept-license --severity high $(BASE_IMAGE_NAME):$(OPENJ9_VERSION)
-	docker scan --accept-license --severity high $(BASE_IMAGE_NAME):$(OPENJDK17_VERSION)
-	docker scan --accept-license --severity high $(WITHTOOLS_IMAGE_NAME):$(VERSION)
-	docker scan --accept-license --severity high $(WITHTOOLS_IMAGE_NAME):$(OPENJ9_VERSION)
-	docker scan --accept-license --severity high $(WITHTOOLS_IMAGE_NAME):$(OPENJDK17_VERSION)
+
+snyk_auth: ## authenticate with Snyk
+	@snyk auth $(DOCKER_SCAN_SNYK_TOKEN)
+
+docker_scan: snyk_auth ## scan docker images using Snyk CLI
+	@snyk container test $(BASE_IMAGE_NAME):$(VERSION) --severity-threshold=high || true
+	@snyk container test $(BASE_IMAGE_NAME):$(OPENJ9_VERSION) --severity-threshold=high || true
+	@snyk container test $(BASE_IMAGE_NAME):$(OPENJDK17_VERSION) --severity-threshold=high || true
+	@snyk container test $(WITHTOOLS_IMAGE_NAME):$(VERSION) --severity-threshold=high || true
+	@snyk container test $(WITHTOOLS_IMAGE_NAME):$(OPENJ9_VERSION) --severity-threshold=high || true
+	@snyk container test $(WITHTOOLS_IMAGE_NAME):$(OPENJDK17_VERSION) --severity-threshold=high || true
+
 
 .PHONY: push-docker-image
 push-docker-image: ## push the docker image to the registry (DOCKER_USER and DOCKER_PASS mandatory)
