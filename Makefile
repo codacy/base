@@ -20,16 +20,13 @@ docker_build: ## build the docker image
 	docker build --build-arg base_image=$(BASE_IMAGE_OPENJDK17) --no-cache -t $(WITHTOOLS_IMAGE_NAME):$(OPENJDK17_VERSION) --target withtools .
 
 
-snyk_auth: ## authenticate with Snyk
-	@snyk auth $(DOCKER_SCAN_SNYK_TOKEN)
-
-docker_scan: snyk_auth ## scan docker images using Snyk CLI
-	@snyk container test $(BASE_IMAGE_NAME):$(VERSION) --severity-threshold=high || true
-	@snyk container test $(BASE_IMAGE_NAME):$(OPENJ9_VERSION) --severity-threshold=high || true
-	@snyk container test $(BASE_IMAGE_NAME):$(OPENJDK17_VERSION) --severity-threshold=high || true
-	@snyk container test $(WITHTOOLS_IMAGE_NAME):$(VERSION) --severity-threshold=high || true
-	@snyk container test $(WITHTOOLS_IMAGE_NAME):$(OPENJ9_VERSION) --severity-threshold=high || true
-	@snyk container test $(WITHTOOLS_IMAGE_NAME):$(OPENJDK17_VERSION) --severity-threshold=high || true
+docker_scan: ## scan docker images using Docker Scout
+	docker scout quickview $(BASE_IMAGE_NAME):$(VERSION) || true
+	docker scout quickview $(BASE_IMAGE_NAME):$(OPENJ9_VERSION) || true
+	docker scout quickview $(BASE_IMAGE_NAME):$(OPENJDK17_VERSION) || true
+	docker scout quickview $(WITHTOOLS_IMAGE_NAME):$(VERSION) || true
+	docker scout quickview $(WITHTOOLS_IMAGE_NAME):$(OPENJ9_VERSION) || true
+	docker scout quickview $(WITHTOOLS_IMAGE_NAME):$(OPENJDK17_VERSION) || true
 
 
 .PHONY: push-docker-image
