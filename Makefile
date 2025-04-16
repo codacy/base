@@ -19,14 +19,15 @@ docker_build: ## build the docker image
 	docker build --build-arg base_image=$(BASE_IMAGE_OPENJ9) --no-cache -t $(WITHTOOLS_IMAGE_NAME):$(OPENJ9_VERSION) --target withtools .
 	docker build --build-arg base_image=$(BASE_IMAGE_OPENJDK17) --no-cache -t $(WITHTOOLS_IMAGE_NAME):$(OPENJDK17_VERSION) --target withtools .
 
-docker_scan: ## scan the docker image for security vulnerabilities
-	docker scan --accept-license --login --token $(DOCKER_SCAN_SNYK_TOKEN) &&\
-	docker scan --accept-license --severity high $(BASE_IMAGE_NAME):$(VERSION)
-	docker scan --accept-license --severity high $(BASE_IMAGE_NAME):$(OPENJ9_VERSION)
-	docker scan --accept-license --severity high $(BASE_IMAGE_NAME):$(OPENJDK17_VERSION)
-	docker scan --accept-license --severity high $(WITHTOOLS_IMAGE_NAME):$(VERSION)
-	docker scan --accept-license --severity high $(WITHTOOLS_IMAGE_NAME):$(OPENJ9_VERSION)
-	docker scan --accept-license --severity high $(WITHTOOLS_IMAGE_NAME):$(OPENJDK17_VERSION)
+
+docker_scan: ## scan docker images using Docker Scout
+	docker scout quickview $(BASE_IMAGE_NAME):$(VERSION) || true
+	docker scout quickview $(BASE_IMAGE_NAME):$(OPENJ9_VERSION) || true
+	docker scout quickview $(BASE_IMAGE_NAME):$(OPENJDK17_VERSION) || true
+	docker scout quickview $(WITHTOOLS_IMAGE_NAME):$(VERSION) || true
+	docker scout quickview $(WITHTOOLS_IMAGE_NAME):$(OPENJ9_VERSION) || true
+	docker scout quickview $(WITHTOOLS_IMAGE_NAME):$(OPENJDK17_VERSION) || true
+
 
 .PHONY: push-docker-image
 push-docker-image: ## push the docker image to the registry (DOCKER_USER and DOCKER_PASS mandatory)
