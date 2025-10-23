@@ -5,16 +5,8 @@ LABEL maintainer="Codacy Team <code@codacy.com>"
 
 RUN \
   apt-get -y update && \
-  apt-get -y install software-properties-common gnupg && \
-  export GNUPGHOME="$(mktemp -d)" && \
-  apt-key adv --keyserver keyserver.ubuntu.com --recv-keys A1715D88E1DF1F24 && \
-  add-apt-repository -y "deb http://ppa.launchpad.net/git-core/ppa/ubuntu focal main" && \
-  apt-get -y update && \
-  apt-get -y install wget unzip && \
-  apt-get -y install git=1:2.* && \
+  apt-get -y install unzip git && \
   apt-get -y upgrade && \
-  rm -rf "$GNUPGHOME" && \
-  apt-get -y remove software-properties-common gnupg && \
   rm -rf /root/.cache && \
   apt-get purge -y $(apt-cache search '~c' | awk '{ print $2 }') && \
   apt-get -y autoremove && \
