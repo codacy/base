@@ -8,7 +8,11 @@
 
 Dockerfile describing a docker containing:
 - Debian Buster
-- OpenJDK 8 JRE
+- Available Java versions:
+  - OpenJDK 8 JRE (default)
+  - OpenJDK 8 JRE with OpenJ9
+  - OpenJDK 11 JRE
+  - OpenJDK 17 JRE
 - Docker cli 17.09.*
 - Git cli 2.*
 - Unix tools: curl, wget and unzip.
