@@ -13,13 +13,13 @@ BASE_IMAGE_OPENJ9=adoptopenjdk/openjdk8-openj9:x86_64-ubuntu-jre8u462-b08_openj9
 all: docker_build ## produce the docker image
 
 docker_build: ## build the docker image
-	docker build --build-arg base_image=$(BASE_IMAGE_OPENJDK)   --no-cache -t $(BASE_IMAGE_NAME):$(VERSION) --target base .
-	docker build --build-arg base_image=$(BASE_IMAGE_OPENJ9)    --no-cache -t $(BASE_IMAGE_NAME):$(OPENJ9_VERSION) --target base .
+	docker build --build-arg base_image=$(BASE_IMAGE_OPENJDK) --no-cache -t $(BASE_IMAGE_NAME):$(VERSION) --target base .
+	docker build --build-arg base_image=$(BASE_IMAGE_OPENJ9) --no-cache -t $(BASE_IMAGE_NAME):$(OPENJ9_VERSION) --target base .
 	docker build --build-arg base_image=$(BASE_IMAGE_OPENJDK11) --no-cache -t $(BASE_IMAGE_NAME):$(OPENJDK11_VERSION) --target base .
 	docker build --build-arg base_image=$(BASE_IMAGE_OPENJDK17) --no-cache -t $(BASE_IMAGE_NAME):$(OPENJDK17_VERSION) --target base .
 
-	docker build --build-arg base_image=$(BASE_IMAGE_OPENJDK)   --no-cache -t $(WITHTOOLS_IMAGE_NAME):$(VERSION) --target withtools .
-	docker build --build-arg base_image=$(BASE_IMAGE_OPENJ9)    --no-cache -t $(WITHTOOLS_IMAGE_NAME):$(OPENJ9_VERSION) --target withtools .
+	docker build --build-arg base_image=$(BASE_IMAGE_OPENJDK) --no-cache -t $(WITHTOOLS_IMAGE_NAME):$(VERSION) --target withtools .
+	docker build --build-arg base_image=$(BASE_IMAGE_OPENJ9) --no-cache -t $(WITHTOOLS_IMAGE_NAME):$(OPENJ9_VERSION) --target withtools .
 	docker build --build-arg base_image=$(BASE_IMAGE_OPENJDK11) --no-cache -t $(WITHTOOLS_IMAGE_NAME):$(OPENJDK11_VERSION) --target withtools .
 	docker build --build-arg base_image=$(BASE_IMAGE_OPENJDK17) --no-cache -t $(WITHTOOLS_IMAGE_NAME):$(OPENJDK17_VERSION) --target withtools .
 
