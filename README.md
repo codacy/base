@@ -7,7 +7,7 @@
 ## Contents
 
 Dockerfile describing a docker containing:
-- Debian Buster
+- Ubuntu-based images (for example, AdoptOpenJDK and Eclipse Temurin images based on Ubuntu 20.04 "focal" and 22.04 "jammy")
 - Available Java versions:
   - OpenJDK 8 JRE (default)
   - OpenJDK 8 JRE with OpenJ9
