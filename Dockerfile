@@ -6,7 +6,8 @@ LABEL maintainer="Codacy Team <code@codacy.com>"
 RUN \
   apt-get -y update && \
   apt-get -y install unzip git && \
-  apt-get -y upgrade && \
+  apt-get -y dist-upgrade && \
+  apt-get -y install --only-upgrade openssl libssl3 && \
   rm -rf /root/.cache && \
   apt-get purge -y $(apt-cache search '~c' | awk '{ print $2 }') && \
   apt-get -y autoremove && \
