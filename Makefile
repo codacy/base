@@ -6,11 +6,11 @@ OPENJ9_VERSION?=openj9-$(VERSION)
 OPENJDK11_VERSION?=jre11-$(VERSION)
 OPENJDK17_VERSION?=jre17-$(VERSION)
 OPENJDK25_VERSION?=jre25-$(VERSION)
-BASE_IMAGE_OPENJDK=adoptopenjdk/openjdk8:x86_64-ubuntu-jre8u462-b08
+BASE_IMAGE_OPENJDK=adoptopenjdk/openjdk8:x86_64-ubuntu-jre8u504-b01
 BASE_IMAGE_OPENJDK11=eclipse-temurin:11-jre-focal
 BASE_IMAGE_OPENJDK17=eclipse-temurin:17.0.20.1_1-jre-jammy
 BASE_IMAGE_OPENJDK25=eclipse-temurin:25.0.4.1_1-jre-jammy
-BASE_IMAGE_OPENJ9=adoptopenjdk/openjdk8-openj9:x86_64-ubuntu-jre8u462-b08_openj9-0.53.0
+BASE_IMAGE_OPENJ9=adoptopenjdk/openjdk8-openj9:x86_64-ubuntu-jre8u482-b08.1_openj9-0.57.0
 
 all: docker_build ## produce the docker image
 
