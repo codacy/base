@@ -13,6 +13,7 @@ Dockerfile describing a docker containing:
   - OpenJDK 8 JRE with OpenJ9
   - OpenJDK 11 JRE
   - OpenJDK 17 JRE
+  - OpenJDK 25 JRE
 - Docker cli 17.09.*
 - Git cli 2.*
 - Unix tools: curl, wget and unzip.
