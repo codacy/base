@@ -5,6 +5,9 @@ LABEL maintainer="Codacy Team <code@codacy.com>"
 
 RUN \
   apt-get -y update && \
+  apt-get -y install software-properties-common && \
+  add-apt-repository -y ppa:git-core/ppa && \
+  apt-get -y update && \
   apt-get -y install unzip git && \
   apt-get -y upgrade && \
   rm -rf /root/.cache && \
