@@ -7,13 +7,10 @@
 ## Contents
 
 Dockerfile describing a docker containing:
-- Ubuntu-based images (for example, AdoptOpenJDK and Eclipse Temurin images based on Ubuntu 20.04 "focal" and 22.04 "jammy")
-- Available Java versions:
-  - OpenJDK 8 JRE (default)
-  - OpenJDK 8 JRE with OpenJ9
-  - OpenJDK 11 JRE
+- Ubuntu-based images (Eclipse Temurin on Ubuntu 22.04 "jammy")
+- Available Java versions (tags `jre17-<version>` and `jre25-<version>`):
   - OpenJDK 17 JRE
-  - OpenJDK 25 JRE
+  - OpenJDK 25 JRE (also tagged `latest`)
 - Docker cli 17.09.*
 - Git cli 2.*
 - Unix tools: curl, wget and unzip.
