@@ -103,5 +103,4 @@ RUN \
   apt-get -y clean all && \
   rm -rf /var/lib/apt/lists/* && \
   rm -rf /var/cache/apt && \
-  rm -rf /var/cache/oracle-jdk8-installer && \
   rm -rf /tmp/*
