@@ -9,6 +9,7 @@ RUN \
   add-apt-repository -y ppa:git-core/ppa && \
   apt-get -y update && \
   apt-get -y install unzip git && \
+  apt-get -y purge --auto-remove software-properties-common && \
   apt-get -y upgrade && \
   rm -rf /root/.cache && \
   apt-get purge -y $(apt-cache search '~c' | awk '{ print $2 }') && \
