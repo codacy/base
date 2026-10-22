@@ -20,10 +20,10 @@ RUN \
   rm -rf /tmp/*
 
 # CVE-2026-91403: add the entries of the official OpenJDK blocked.certs (2026-10-21) until the base image ships a fixed JRE.
-# JDK 8 reads blacklisted.certs, newer JDKs read blocked.certs. Remove once the base images are bumped to a fixed JRE.
+# Remove once the base images are bumped to a fixed JRE.
 RUN \
-  blocklist=$(find "${JAVA_HOME:?}/lib/security" "${JAVA_HOME}/jre/lib/security" -maxdepth 1 \( -name blocked.certs -o -name blacklisted.certs \) 2>/dev/null | head -n 1) && \
-  test -n "$blocklist" && \
+  blocklist="${JAVA_HOME:?}/lib/security/blocked.certs" && \
+  test -f "$blocklist" && \
   printf '\n# CVE-2026-91403 eMudhra compromised intermediate CAs (official OpenJDK blocked.certs, 2026-10-21)\n%s\n' \
     0164D7CEAE5BB909C272AF151FF44B1177AE9B47D9424B94F1D9558C30934D19 \
     10E7E5BFDB55CFB78D0C21366654046182087A1960C079682513795665AA0C6B \
