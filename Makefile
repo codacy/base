@@ -6,6 +6,8 @@ OPENJDK17_VERSION?=jre17-$(VERSION)
 OPENJDK25_VERSION?=jre25-$(VERSION)
 BASE_IMAGE_OPENJDK17=eclipse-temurin:17.0.21.1_2-jre-jammy
 BASE_IMAGE_OPENJDK25=eclipse-temurin:25.0.5.1_2-jre-jammy
+# Java version a Temurin tag ships, e.g. eclipse-temurin:17.0.21.1_2-jre-jammy -> 17.0.21.1
+temurin_java_version=$(firstword $(subst _, ,$(lastword $(subst :, ,$(1)))))
 
 all: docker_build ## produce the docker image
 
@@ -15,6 +17,12 @@ docker_build: ## build the docker image
 
 	docker build --build-arg base_image=$(BASE_IMAGE_OPENJDK17) --no-cache -t $(WITHTOOLS_IMAGE_NAME):$(OPENJDK17_VERSION) --target withtools .
 	docker build --build-arg base_image=$(BASE_IMAGE_OPENJDK25) --no-cache -t $(WITHTOOLS_IMAGE_NAME):$(OPENJDK25_VERSION) --target withtools .
+
+docker_verify: ## check each built image runs the Java version its base image pins
+	docker run --rm $(BASE_IMAGE_NAME):$(OPENJDK17_VERSION) java -version 2>&1 | grep -F '"$(call temurin_java_version,$(BASE_IMAGE_OPENJDK17))"'
+	docker run --rm $(BASE_IMAGE_NAME):$(OPENJDK25_VERSION) java -version 2>&1 | grep -F '"$(call temurin_java_version,$(BASE_IMAGE_OPENJDK25))"'
+	docker run --rm $(WITHTOOLS_IMAGE_NAME):$(OPENJDK17_VERSION) java -version 2>&1 | grep -F '"$(call temurin_java_version,$(BASE_IMAGE_OPENJDK17))"'
+	docker run --rm $(WITHTOOLS_IMAGE_NAME):$(OPENJDK25_VERSION) java -version 2>&1 | grep -F '"$(call temurin_java_version,$(BASE_IMAGE_OPENJDK25))"'
 
 docker_scan: ## scan docker images using Docker Scout
 	docker scout quickview $(BASE_IMAGE_NAME):$(OPENJDK17_VERSION) || true
