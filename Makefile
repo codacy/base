@@ -4,8 +4,8 @@ WITHTOOLS_IMAGE_NAME=codacy/withtools
 VERSION?=$(shell cat .version || echo dev)
 OPENJDK17_VERSION?=jre17-$(VERSION)
 OPENJDK25_VERSION?=jre25-$(VERSION)
-BASE_IMAGE_OPENJDK17=eclipse-temurin:17.0.21_9-jre-jammy
-BASE_IMAGE_OPENJDK25=eclipse-temurin:25.0.5_8-jre-jammy
+BASE_IMAGE_OPENJDK17=eclipse-temurin:17.0.21.1_2-jre-jammy
+BASE_IMAGE_OPENJDK25=eclipse-temurin:25.0.5.1_2-jre-jammy
 
 all: docker_build ## produce the docker image
 
