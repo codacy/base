@@ -13,7 +13,7 @@ workflows:
           context: CodacyDocker
           requires:
             - codacy/checkout_and_version
-          cmd: make docker_build && make docker_scan
+          cmd: make docker_build && make docker_verify && make docker_scan
           filters:
             branches:
               ignore:
@@ -25,6 +25,7 @@ workflows:
             - codacy/checkout_and_version
           cmd: |
             make docker_build && \
+              make docker_verify && \
               make docker_scan && \
               make push-docker-image && \
               make push-latest-docker-image
