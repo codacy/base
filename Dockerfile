@@ -4,25 +4,16 @@ FROM ${base_image} as base
 LABEL maintainer="Codacy Team <code@codacy.com>"
 
 RUN \
-  apt-get -y update && \
-  apt-get -y install software-properties-common && \
-  add-apt-repository -y ppa:git-core/ppa && \
-  apt-get -y update && \
-  apt-get -y install unzip git && \
-  apt-get -y purge --auto-remove software-properties-common && \
-  apt-get -y upgrade && \
-  rm -rf /root/.cache && \
-  apt-get purge -y $(apt-cache search '~c' | awk '{ print $2 }') && \
-  apt-get -y autoremove && \
-  apt-get -y autoclean && \
-  apt-get -y clean all && \
-  rm -rf /var/lib/apt/lists/* && \
-  rm -rf /var/cache/apt && \
+  dnf -y upgrade --releasever=latest --exclude="java-*-amazon-corretto*" && \
+  dnf -y install git openssh-clients shadow-utils unzip && \
+  dnf clean all && \
+  rm -rf /var/cache/dnf && \
   rm -rf /tmp/*
 
 # Git and SSH Configs
 RUN \
-  echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config && \
+  mkdir -p /etc/ssh/ssh_config.d && \
+  echo "StrictHostKeyChecking no" > /etc/ssh/ssh_config.d/00-codacy.conf && \
   git config --global core.quotepath false && \
   git config --global core.packedGitLimit 512m && \
   git config --global core.packedGitWindowSize 512m && \
@@ -30,21 +21,15 @@ RUN \
   git config --global pack.packSizeLimit 2047m && \
   git config --global pack.windowMemory 2047m
 
-ENV TINI_VERSION v0.18.0
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
-RUN chmod +x /tini
+ARG TINI_VERSION=v0.19.0
+ARG TINI_SHA256=c5b0666b4cb676901f90dfcb37106783c5fe2077b04590973b885950611b30ee
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-static-amd64 /tini
+RUN echo "${TINI_SHA256}  /tini" | sha256sum -c - && chmod +x /tini
 
 FROM base as withtools
 
 RUN \
-  apt-get -y update && \
-  apt-get -y install apparmor libdevmapper1.02.1 && \
-  apt-get -y install libltdl-dev && \
-  ln -s /lib/x86_64-linux-gnu/libdevmapper.so.1.02.1 /lib/x86_64-linux-gnu/libdevmapper.so.1.02 && \
-  apt-get purge -y $(apt-cache search '~c' | awk '{ print $2 }') && \
-  apt-get -y autoremove && \
-  apt-get -y autoclean && \
-  apt-get -y clean all && \
-  rm -rf /var/lib/apt/lists/* && \
-  rm -rf /var/cache/apt && \
+  dnf -y install device-mapper-libs libtool-ltdl && \
+  dnf clean all && \
+  rm -rf /var/cache/dnf && \
   rm -rf /tmp/*
