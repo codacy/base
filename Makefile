@@ -8,10 +8,6 @@ CORRETTO17_VERSION=17.0.21.1.2
 CORRETTO25_VERSION=25.0.5.1.2
 BASE_IMAGE_OPENJDK17=amazoncorretto:17.0.21-al2023-headless@sha256:8011b08e892b5c537f7fa91b8eec52356f4744d67fdb0843b9c7168e4575cf54
 BASE_IMAGE_OPENJDK25=amazoncorretto:25.0.5-al2023-headless@sha256:411162c79452155a12b81211dd0abeeef380f6903e4d0468c06c15c4908cfc9f
-# Previous distribution, only used by docker_cacerts_diff
-TEMURIN_IMAGE_OPENJDK17=eclipse-temurin:17.0.21.1_2-jre-jammy
-TEMURIN_IMAGE_OPENJDK25=eclipse-temurin:25.0.5.1_2-jre-jammy
-cacerts_fingerprints=docker run --rm $(1) sh -c 'keytool -list -cacerts -storepass changeit' | grep -o 'SHA-256): .*' | cut -d' ' -f2 | sort -u
 DOCKER_SCOUT_VERSION=1.29.0
 DOCKER_SCOUT_SHA256=9157cdc9372b478a8cd51dd53f5e9c74a7e34056ea291c65520bf76016fa72f4
 
@@ -32,16 +28,6 @@ docker_verify: ## check each built image runs the pinned Corretto build and ship
 	for image in $(BASE_IMAGE_NAME):$(OPENJDK17_VERSION) $(BASE_IMAGE_NAME):$(OPENJDK25_VERSION) $(WITHTOOLS_IMAGE_NAME):$(OPENJDK17_VERSION) $(WITHTOOLS_IMAGE_NAME):$(OPENJDK25_VERSION); do \
 	  docker run --rm $$image bash -c 'set -e; git --version; for tool in ssh-agent ssh-add unzip useradd; do command -v $$tool; done; /tini --version; ssh -G example.com | grep -x "stricthostkeychecking false"' || exit 1; \
 	done
-
-docker_cacerts_diff: ## list CA certificates Temurin trusts that the Corretto images do not
-	@$(call cacerts_fingerprints,$(TEMURIN_IMAGE_OPENJDK17)) > /tmp/cacerts-temurin17
-	@$(call cacerts_fingerprints,$(BASE_IMAGE_NAME):$(OPENJDK17_VERSION)) > /tmp/cacerts-corretto17
-	@$(call cacerts_fingerprints,$(TEMURIN_IMAGE_OPENJDK25)) > /tmp/cacerts-temurin25
-	@$(call cacerts_fingerprints,$(BASE_IMAGE_NAME):$(OPENJDK25_VERSION)) > /tmp/cacerts-corretto25
-	@echo "jre17: only in Temurin:"; comm -23 /tmp/cacerts-temurin17 /tmp/cacerts-corretto17
-	@echo "jre17: only in Corretto:"; comm -13 /tmp/cacerts-temurin17 /tmp/cacerts-corretto17
-	@echo "jre25: only in Temurin:"; comm -23 /tmp/cacerts-temurin25 /tmp/cacerts-corretto25
-	@echo "jre25: only in Corretto:"; comm -13 /tmp/cacerts-temurin25 /tmp/cacerts-corretto25
 
 docker_scout_install: ## install the pinned Docker Scout CLI plugin
 	set -e; \
