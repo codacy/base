@@ -41,13 +41,13 @@ docker_scout_install: ## install the pinned Docker Scout CLI plugin
 	chmod +x "$$plugins/docker-scout"
 	docker scout version
 
-docker_scan: docker_scout_install ## scan docker images using Docker Scout (DOCKER_USER and DOCKER_PASS mandatory)
+docker_scan: docker_scout_install ## scan docker images using Docker Scout, failing on fixable critical or high OS package CVEs (DOCKER_USER and DOCKER_PASS mandatory)
 	@test -n "$$DOCKER_USER" && test -n "$$DOCKER_PASS" || { echo "DOCKER_USER and DOCKER_PASS are required"; exit 1; }
 	@printf '%s' "$$DOCKER_PASS" | docker login -u "$$DOCKER_USER" --password-stdin
-	docker scout quickview $(BASE_IMAGE_NAME):$(OPENJDK17_VERSION)
-	docker scout quickview $(BASE_IMAGE_NAME):$(OPENJDK25_VERSION)
-	docker scout quickview $(WITHTOOLS_IMAGE_NAME):$(OPENJDK17_VERSION)
-	docker scout quickview $(WITHTOOLS_IMAGE_NAME):$(OPENJDK25_VERSION)
+	for image in $(BASE_IMAGE_NAME):$(OPENJDK17_VERSION) $(BASE_IMAGE_NAME):$(OPENJDK25_VERSION) $(WITHTOOLS_IMAGE_NAME):$(OPENJDK17_VERSION) $(WITHTOOLS_IMAGE_NAME):$(OPENJDK25_VERSION); do \
+	  docker scout quickview $$image && \
+	  docker scout cves --only-fixed --only-severity critical,high --only-package-type rpm --exit-code $$image || exit 1; \
+	done
 
 
 .PHONY: push-docker-image
