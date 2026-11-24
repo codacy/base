@@ -7,13 +7,13 @@
 ## Contents
 
 Dockerfile describing a docker containing:
-- Ubuntu-based images (Eclipse Temurin on Ubuntu 22.04 "jammy")
+- Amazon Corretto on Amazon Linux 2023 (`amazoncorretto:<N>-al2023-headless`)
 - Available Java versions (tags `jre17-<version>` and `jre25-<version>`):
-  - OpenJDK 17 JRE
-  - OpenJDK 25 JRE (also tagged `latest`)
-- Docker cli 17.09.*
-- Git cli 2.*
-- Unix tools: curl, wget and unzip.
+  - Corretto 17
+  - Corretto 25 (also tagged `latest`)
+- Git cli 2.*, OpenSSH client (`ssh-agent`, `ssh-add`), `useradd`, unzip
+- `/tini` as init process
+- Packages are installed with `dnf`, not `apt-get`.
 
 ## Build and Publish
 
