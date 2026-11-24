@@ -8,6 +8,8 @@ BASE_IMAGE_OPENJDK17=eclipse-temurin:17.0.21.1_2-jre-jammy
 BASE_IMAGE_OPENJDK25=eclipse-temurin:25.0.5.1_2-jre-jammy
 # Java version a Temurin tag ships, e.g. eclipse-temurin:17.0.21.1_2-jre-jammy -> 17.0.21.1
 temurin_java_version=$(firstword $(subst _, ,$(lastword $(subst :, ,$(1)))))
+DOCKER_SCOUT_VERSION=1.29.0
+DOCKER_SCOUT_SHA256=9157cdc9372b478a8cd51dd53f5e9c74a7e34056ea291c65520bf76016fa72f4
 
 all: docker_build ## produce the docker image
 
@@ -24,11 +26,25 @@ docker_verify: ## check each built image runs the Java version its base image pi
 	docker run --rm $(WITHTOOLS_IMAGE_NAME):$(OPENJDK17_VERSION) java -version 2>&1 | grep -F '"$(call temurin_java_version,$(BASE_IMAGE_OPENJDK17))"'
 	docker run --rm $(WITHTOOLS_IMAGE_NAME):$(OPENJDK25_VERSION) java -version 2>&1 | grep -F '"$(call temurin_java_version,$(BASE_IMAGE_OPENJDK25))"'
 
-docker_scan: ## scan docker images using Docker Scout
-	docker scout quickview $(BASE_IMAGE_NAME):$(OPENJDK17_VERSION) || true
-	docker scout quickview $(BASE_IMAGE_NAME):$(OPENJDK25_VERSION) || true
-	docker scout quickview $(WITHTOOLS_IMAGE_NAME):$(OPENJDK17_VERSION) || true
-	docker scout quickview $(WITHTOOLS_IMAGE_NAME):$(OPENJDK25_VERSION) || true
+docker_scout_install: ## install the pinned Docker Scout CLI plugin
+	set -e; \
+	plugins="$${DOCKER_CONFIG:-$$HOME/.docker}/cli-plugins"; \
+	tmp=$$(mktemp -d); \
+	trap 'rm -rf "$$tmp"' EXIT; \
+	curl -fsSL -o "$$tmp/docker-scout.tar.gz" https://github.com/docker/scout-cli/releases/download/v$(DOCKER_SCOUT_VERSION)/docker-scout_$(DOCKER_SCOUT_VERSION)_linux_amd64.tar.gz; \
+	echo "$(DOCKER_SCOUT_SHA256)  $$tmp/docker-scout.tar.gz" | sha256sum -c -; \
+	mkdir -p "$$plugins"; \
+	tar -xzf "$$tmp/docker-scout.tar.gz" -C "$$plugins" docker-scout; \
+	chmod +x "$$plugins/docker-scout"
+	docker scout version
+
+docker_scan: docker_scout_install ## scan docker images using Docker Scout (DOCKER_USER and DOCKER_PASS mandatory)
+	@test -n "$$DOCKER_USER" && test -n "$$DOCKER_PASS" || { echo "DOCKER_USER and DOCKER_PASS are required"; exit 1; }
+	@printf '%s' "$$DOCKER_PASS" | docker login -u "$$DOCKER_USER" --password-stdin
+	docker scout quickview $(BASE_IMAGE_NAME):$(OPENJDK17_VERSION)
+	docker scout quickview $(BASE_IMAGE_NAME):$(OPENJDK25_VERSION)
+	docker scout quickview $(WITHTOOLS_IMAGE_NAME):$(OPENJDK17_VERSION)
+	docker scout quickview $(WITHTOOLS_IMAGE_NAME):$(OPENJDK25_VERSION)
 
 
 .PHONY: push-docker-image
