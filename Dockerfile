@@ -5,7 +5,7 @@ LABEL maintainer="Codacy Team <code@codacy.com>"
 
 RUN \
   dnf -y upgrade --releasever=latest --exclude="java-*-amazon-corretto*" && \
-  dnf -y install git openssh-clients shadow-utils unzip && \
+  dnf -y install git-core openssh-clients shadow-utils unzip && \
   dnf clean all && \
   rm -rf /var/cache/dnf && \
   rm -rf /tmp/*
