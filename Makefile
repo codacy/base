@@ -38,8 +38,8 @@ docker_scout_install: ## install the pinned Docker Scout CLI plugin
 	chmod +x "$$plugins/docker-scout"
 	docker scout version
 
-docker_scan: docker_scout_install ## scan docker images using Docker Scout (DOCKER_USER and DOCKER_PASS mandatory)
-	@printf '%s' "$$DOCKER_PASS" | docker login -u "$$DOCKER_USER" --password-stdin
+docker_scan: docker_scout_install ## scan docker images using Docker Scout (logs in with DOCKER_USER and DOCKER_PASS when set)
+	@if [ -n "$$DOCKER_PASS" ]; then printf '%s' "$$DOCKER_PASS" | docker login -u "$$DOCKER_USER" --password-stdin; fi
 	docker scout quickview $(BASE_IMAGE_NAME):$(OPENJDK17_VERSION)
 	docker scout quickview $(BASE_IMAGE_NAME):$(OPENJDK25_VERSION)
 	docker scout quickview $(WITHTOOLS_IMAGE_NAME):$(OPENJDK17_VERSION)
