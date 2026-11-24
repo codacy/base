@@ -27,15 +27,19 @@ docker_verify: ## check each built image runs the Java version its base image pi
 	docker run --rm $(WITHTOOLS_IMAGE_NAME):$(OPENJDK25_VERSION) java -version 2>&1 | grep -F '"$(call temurin_java_version,$(BASE_IMAGE_OPENJDK25))"'
 
 docker_scout_install: ## install the pinned Docker Scout CLI plugin
-	mkdir -p $(HOME)/.docker/cli-plugins
-	curl -fsSL -o /tmp/docker-scout.tar.gz https://github.com/docker/scout-cli/releases/download/v$(DOCKER_SCOUT_VERSION)/docker-scout_$(DOCKER_SCOUT_VERSION)_linux_amd64.tar.gz
-	echo "$(DOCKER_SCOUT_SHA256)  /tmp/docker-scout.tar.gz" | sha256sum -c -
-	tar -xzf /tmp/docker-scout.tar.gz -C $(HOME)/.docker/cli-plugins docker-scout
-	chmod +x $(HOME)/.docker/cli-plugins/docker-scout
+	set -e; \
+	plugins="$${DOCKER_CONFIG:-$$HOME/.docker}/cli-plugins"; \
+	tmp=$$(mktemp -d); \
+	trap 'rm -rf "$$tmp"' EXIT; \
+	curl -fsSL -o "$$tmp/docker-scout.tar.gz" https://github.com/docker/scout-cli/releases/download/v$(DOCKER_SCOUT_VERSION)/docker-scout_$(DOCKER_SCOUT_VERSION)_linux_amd64.tar.gz; \
+	echo "$(DOCKER_SCOUT_SHA256)  $$tmp/docker-scout.tar.gz" | sha256sum -c -; \
+	mkdir -p "$$plugins"; \
+	tar -xzf "$$tmp/docker-scout.tar.gz" -C "$$plugins" docker-scout; \
+	chmod +x "$$plugins/docker-scout"
 	docker scout version
 
 docker_scan: docker_scout_install ## scan docker images using Docker Scout (DOCKER_USER and DOCKER_PASS mandatory)
-	@echo "$(DOCKER_PASS)" | docker login -u "$(DOCKER_USER)" --password-stdin
+	@printf '%s' "$$DOCKER_PASS" | docker login -u "$$DOCKER_USER" --password-stdin
 	docker scout quickview $(BASE_IMAGE_NAME):$(OPENJDK17_VERSION)
 	docker scout quickview $(BASE_IMAGE_NAME):$(OPENJDK25_VERSION)
 	docker scout quickview $(WITHTOOLS_IMAGE_NAME):$(OPENJDK17_VERSION)
