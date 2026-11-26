@@ -11,7 +11,7 @@ Dockerfile describing a docker containing:
 - Available Java versions (tags `jre17-<version>` and `jre25-<version>`):
   - Corretto 17
   - Corretto 25 (also tagged `latest`)
-- Git cli 2.*, OpenSSH client (`ssh-agent`, `ssh-add`), `useradd`, unzip
+- Git cli built from the official kernel.org release tarball (version and sha256 pinned in the `Makefile`), OpenSSH client (`ssh-agent`, `ssh-add`), `useradd`, unzip
 - `/tini` as init process
 - Packages are installed with `dnf`, not `apt-get`.
 

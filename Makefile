@@ -8,17 +8,20 @@ CORRETTO17_VERSION=17.0.21.1.2
 CORRETTO25_VERSION=25.0.5.1.2
 BASE_IMAGE_OPENJDK17=amazoncorretto:17.0.21-al2023-headless@sha256:8011b08e892b5c537f7fa91b8eec52356f4744d67fdb0843b9c7168e4575cf54
 BASE_IMAGE_OPENJDK25=amazoncorretto:25.0.5-al2023-headless@sha256:411162c79452155a12b81211dd0abeeef380f6903e4d0468c06c15c4908cfc9f
+GIT_VERSION=2.56.1
+GIT_SHA256=f0b0bf89264b9bd2e1c640363e7529643989da76281600473c50745cd34a607f
+DOCKER_BUILD_ARGS=--build-arg GIT_VERSION=$(GIT_VERSION) --build-arg GIT_SHA256=$(GIT_SHA256)
 DOCKER_SCOUT_VERSION=1.29.0
 DOCKER_SCOUT_SHA256=9157cdc9372b478a8cd51dd53f5e9c74a7e34056ea291c65520bf76016fa72f4
 
 all: docker_build ## produce the docker image
 
 docker_build: ## build the docker image
-	docker build --build-arg base_image=$(BASE_IMAGE_OPENJDK17) --no-cache -t $(BASE_IMAGE_NAME):$(OPENJDK17_VERSION) --target base .
-	docker build --build-arg base_image=$(BASE_IMAGE_OPENJDK25) --no-cache -t $(BASE_IMAGE_NAME):$(OPENJDK25_VERSION) --target base .
+	docker build --build-arg base_image=$(BASE_IMAGE_OPENJDK17) $(DOCKER_BUILD_ARGS) --no-cache -t $(BASE_IMAGE_NAME):$(OPENJDK17_VERSION) --target base .
+	docker build --build-arg base_image=$(BASE_IMAGE_OPENJDK25) $(DOCKER_BUILD_ARGS) --no-cache -t $(BASE_IMAGE_NAME):$(OPENJDK25_VERSION) --target base .
 
-	docker build --build-arg base_image=$(BASE_IMAGE_OPENJDK17) --no-cache -t $(WITHTOOLS_IMAGE_NAME):$(OPENJDK17_VERSION) --target withtools .
-	docker build --build-arg base_image=$(BASE_IMAGE_OPENJDK25) --no-cache -t $(WITHTOOLS_IMAGE_NAME):$(OPENJDK25_VERSION) --target withtools .
+	docker build --build-arg base_image=$(BASE_IMAGE_OPENJDK17) $(DOCKER_BUILD_ARGS) --no-cache -t $(WITHTOOLS_IMAGE_NAME):$(OPENJDK17_VERSION) --target withtools .
+	docker build --build-arg base_image=$(BASE_IMAGE_OPENJDK25) $(DOCKER_BUILD_ARGS) --no-cache -t $(WITHTOOLS_IMAGE_NAME):$(OPENJDK25_VERSION) --target withtools .
 
 docker_verify: ## check each built image runs the pinned Corretto build and ships the tools services rely on
 	docker run --rm $(BASE_IMAGE_NAME):$(OPENJDK17_VERSION) java -version 2>&1 | grep -F 'Corretto-$(CORRETTO17_VERSION)'
@@ -26,7 +29,7 @@ docker_verify: ## check each built image runs the pinned Corretto build and ship
 	docker run --rm $(WITHTOOLS_IMAGE_NAME):$(OPENJDK17_VERSION) java -version 2>&1 | grep -F 'Corretto-$(CORRETTO17_VERSION)'
 	docker run --rm $(WITHTOOLS_IMAGE_NAME):$(OPENJDK25_VERSION) java -version 2>&1 | grep -F 'Corretto-$(CORRETTO25_VERSION)'
 	for image in $(BASE_IMAGE_NAME):$(OPENJDK17_VERSION) $(BASE_IMAGE_NAME):$(OPENJDK25_VERSION) $(WITHTOOLS_IMAGE_NAME):$(OPENJDK17_VERSION) $(WITHTOOLS_IMAGE_NAME):$(OPENJDK25_VERSION); do \
-	  docker run --rm $$image bash -c 'set -e; git --version; for tool in ssh-agent ssh-add unzip useradd; do command -v $$tool; done; /tini --version; ssh -G example.com | grep -x "stricthostkeychecking false"' || exit 1; \
+	  docker run --rm $$image bash -c 'set -e; git --version | grep -x "git version $(GIT_VERSION)"; git ls-remote https://github.com/git/git.git HEAD; for tool in ssh-agent ssh-add unzip useradd; do command -v $$tool; done; /tini --version; ssh -G example.com | grep -x "stricthostkeychecking false"' || exit 1; \
 	done
 
 docker_scout_install: ## install the pinned Docker Scout CLI plugin
