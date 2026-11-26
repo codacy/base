@@ -4,7 +4,7 @@ FROM ${base_image} as git
 ARG GIT_VERSION
 ARG GIT_SHA256
 RUN \
-  dnf -y install --allowerasing gcc make tar xz curl-minimal zlib-devel libcurl-devel expat-devel && \
+  dnf -y install --allowerasing gcc make tar xz diffutils curl-minimal zlib-devel libcurl-devel expat-devel && \
   curl -fsSL -o /tmp/git.tar.xz https://mirrors.edge.kernel.org/pub/software/scm/git/git-${GIT_VERSION}.tar.xz && \
   echo "${GIT_SHA256}  /tmp/git.tar.xz" | sha256sum -c - && \
   tar -xJf /tmp/git.tar.xz -C /tmp && \
