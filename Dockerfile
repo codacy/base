@@ -5,7 +5,10 @@ ARG GIT_VERSION
 ARG GIT_SHA256
 RUN \
   dnf -y install --allowerasing gcc make tar xz diffutils curl-minimal zlib-devel libcurl-devel expat-devel && \
-  curl -fsSL -o /tmp/git.tar.xz https://mirrors.edge.kernel.org/pub/software/scm/git/git-${GIT_VERSION}.tar.xz && \
+  for mirror in https://cdn.kernel.org https://mirrors.edge.kernel.org; do \
+    curl -fsSL --retry 5 --retry-all-errors --connect-timeout 20 -o /tmp/git.tar.xz \
+      "${mirror}/pub/software/scm/git/git-${GIT_VERSION}.tar.xz" && break; \
+  done && \
   echo "${GIT_SHA256}  /tmp/git.tar.xz" | sha256sum -c - && \
   tar -xJf /tmp/git.tar.xz -C /tmp && \
   make -C /tmp/git-${GIT_VERSION} -j"$(nproc)" \
