@@ -12,7 +12,7 @@ RUN \
   echo "${GIT_SHA256}  /tmp/git.tar.xz" | sha256sum -c - && \
   tar -xJf /tmp/git.tar.xz -C /tmp && \
   make -C /tmp/git-${GIT_VERSION} -j"$(nproc)" \
-    prefix=/usr NO_GETTEXT=1 NO_PERL=1 NO_PYTHON=1 NO_TCLTK=1 \
+    prefix=/usr NO_GETTEXT=1 NO_PERL=1 NO_PYTHON=1 NO_RUST=1 NO_TCLTK=1 \
     DESTDIR=/git-install install
 
 FROM ${base_image} as base
